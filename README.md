@@ -1,5 +1,7 @@
 # Skool18InVivo
 Présentation de la Skool 18
+https://jamboard.google.com/d/186tIaPuwP7OwYGFWE6qUv1c-yas-nbxNZs30jGAJ0IQ/viewer?f=2
+https://doodle.com/poll/4g574p7ybpvmic9b
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
