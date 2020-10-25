@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react"
+import React, { useEffect, useRef, useCallback } from "react"
 import ReactNipple from "react-nipple"
 import "react-nipple/lib/styles.css"
 
@@ -26,7 +26,7 @@ const AppCtx = {
 
 const App = () => {
   const [, updateState] = React.useState()
-  const forceUpdate = React.useCallback(() => updateState({}), [])
+  const forceUpdate = useCallback(() => updateState({}), [])
   const canvaRef = useRef(null)
 
   const update = () => {
@@ -44,13 +44,13 @@ const App = () => {
     ctx.restore()
   }
 
-  const gameLoop = (ctx) => {
+  const gameLoop = useCallback((ctx) => {
     update()
     render(ctx)
     requestAnimationFrame(() => {
       gameLoop(ctx)
     })
-  }
+  }, [])
 
   const registerObjects = () => {
     AppCtx.map = new Map()
@@ -83,7 +83,7 @@ const App = () => {
     AppCtx.toRender.push(AppCtx.player)
   }
 
-  const registerCallbacks = () => {
+  const registerCallbacks = useCallback(() => {
     window.addEventListener("keydown", (e) => AppCtx.player.move(e, true))
     window.addEventListener("keyup", (e) => AppCtx.player.move(e, false))
     window.addEventListener("resize", () => {
@@ -96,7 +96,7 @@ const App = () => {
       )
       forceUpdate()
     })
-  }
+  }, [forceUpdate])
 
   useEffect(() => {
     const ctx = canvaRef.current.getContext("2d")
@@ -107,7 +107,7 @@ const App = () => {
     requestAnimationFrame(() => {
       gameLoop(ctx)
     })
-  }, [])
+  }, [gameLoop, registerCallbacks])
 
   return (
     <>
