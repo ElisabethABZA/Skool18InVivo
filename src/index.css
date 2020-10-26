@@ -3,3 +3,8 @@ body {
   padding: 0 !important;
   overflow: hidden;
 }
+
+@font-face {
+  font-family: dialog;
+  src: url('font.ttf');
+}

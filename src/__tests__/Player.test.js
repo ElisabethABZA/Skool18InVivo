@@ -53,13 +53,6 @@ describe("Test component Player", () => {
 
     expect(ctxSpy.save).toHaveBeenCalledTimes(1)
     expect(ctxSpy.drawImage).toHaveBeenCalledTimes(1)
-    expect(ctxSpy.drawImage).toHaveBeenCalledWith(
-      player.img,
-      x + cameraStub.viewPort.x,
-      y + cameraStub.viewPort.y,
-      w,
-      h
-    )
     expect(ctxSpy.restore).toHaveBeenCalledTimes(1)
   })
   test("Player position change on player movement right", () => {
@@ -78,6 +71,7 @@ describe("Test component Player", () => {
     player.update()
 
     expect(player.position).toMatchObject({ x: x + 5, y})
+    expect(player.direction).toBe("right")
   })
   test("Player position change on player movement up", () => {
     const x = 1
@@ -95,6 +89,7 @@ describe("Test component Player", () => {
     player.update()
 
     expect(player.position).toMatchObject({x , y: y - 5 })
+    expect(player.direction).toBe("up")
   })
 
   test("Player position change on joystick event", () => {
@@ -117,6 +112,7 @@ describe("Test component Player", () => {
     player.update()
 
     expect(player.position).toMatchObject({ x: x - 5, y: y })
+    expect(player.direction).toBe("left")
   })
 
   test("Player position stop on joystick stop event", () => {
@@ -150,14 +146,12 @@ describe("Test component Player", () => {
     const w = 4
     const h = 8
     const img = PlayerImg
-    const eventUpStub = { keyCode: 38 }
     const eventLeftStub = { keyCode: 37 }
     const appCtxStub = {
       map: { collision: () => true },
     }
 
     const player = new Player(img, x, y, w, h, appCtxStub)
-    player.move(eventUpStub, true)
     player.move(eventLeftStub, true)
     player.update()
 

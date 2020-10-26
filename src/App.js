@@ -5,6 +5,7 @@ import "react-nipple/lib/styles.css"
 import Map from "./components/Map"
 import Player from "./components/Player"
 import Camera from "./components/Camera"
+import Interactible from './components/Interactible'
 
 import PersoA from "./assets/player.png"
 
@@ -22,6 +23,7 @@ const AppCtx = {
   player: null,
   map: null,
   camera: null,
+  frame: 0
 }
 
 const App = () => {
@@ -39,12 +41,13 @@ const App = () => {
     ctx.clearRect(0, 0, AppCtx.windowSize.w, AppCtx.windowSize.h)
     ctx.save()
     AppCtx.toRender.forEach((o) => {
-      o.render(ctx, AppCtx.camera)
+      o.render(ctx, AppCtx.camera, AppCtx)
     })
     ctx.restore()
   }
 
   const gameLoop = useCallback((ctx) => {
+    AppCtx.frame = (AppCtx.frame + 1) % 60
     update()
     render(ctx)
     requestAnimationFrame(() => {
@@ -65,8 +68,8 @@ const App = () => {
       PersoA,
       AppCtx.windowSize.w / 2,
       AppCtx.windowSize.h / 2,
-      50,
-      100,
+      64,
+      64,
       AppCtx
     )
     AppCtx.camera = new Camera(
@@ -81,6 +84,10 @@ const App = () => {
     AppCtx.toRender.push(AppCtx.camera)
     AppCtx.toRender.push(AppCtx.map)
     AppCtx.toRender.push(AppCtx.player)
+    AppCtx.toRender.push(new Interactible(
+      "https://via.placeholder.com/32x64",
+      200, 200, 32, 64
+    ))
   }
 
   const registerCallbacks = useCallback(() => {
