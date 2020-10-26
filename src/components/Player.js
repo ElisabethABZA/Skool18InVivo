@@ -46,17 +46,17 @@ class Player {
       !this.map.collision({ ...this, position: { x: x - 5, y } })
     )
       this.position.x -= 5
-    if (
+    else if (
       this.moving.up &&
       !this.map.collision({ ...this, position: { x, y: y - 5 } })
     )
       this.position.y -= 5
-    if (
+    else if (
       this.moving.right &&
       !this.map.collision({ ...this, position: { x: x + 5, y } })
     )
       this.position.x += 5
-    if (
+    else if (
       this.moving.down &&
       !this.map.collision({ ...this, position: { x, y: y + 5 } })
     )
