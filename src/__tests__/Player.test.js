@@ -9,14 +9,15 @@ describe("Test component Player", () => {
     const h = 8
     const img = PlayerImg
     const oracle = {
-      position: { x, y },
-      size: { w, h },
+      position: { x, y, w, h },
       moving: {
         left: false,
         up: false,
         right: false,
         down: false,
       },
+      action: false,
+      direction: "down",
     }
     const appCtxStub = {
       map: {},
@@ -55,6 +56,51 @@ describe("Test component Player", () => {
     expect(ctxSpy.drawImage).toHaveBeenCalledTimes(1)
     expect(ctxSpy.restore).toHaveBeenCalledTimes(1)
   })
+
+  test("Player action on space event", () => {
+    const x = 1
+    const y = 2
+    const w = 4
+    const h = 8
+    const img = PlayerImg
+    const eventSpaceStub = { keyCode: 32 }
+    const appCtxStub = {
+      map: {
+        collision: () => false,
+        interaction: () => {
+          return {
+            action: () => true,
+          }
+        },
+      },
+    }
+
+    const player = new Player(img, x, y, w, h, appCtxStub)
+    player.move(eventSpaceStub, true)
+
+    expect(player.action).toBeTruthy()
+  })
+
+  test("Player should not move in action", () => {
+    const x = 1
+    const y = 2
+    const w = 4
+    const h = 8
+    const img = PlayerImg
+    const eventRightStub = { keyCode: 39 }
+    const actionOverload = true
+    const appCtxStub = {
+      map: { collision: () => false },
+    }
+
+    const player = new Player(img, x, y, w, h, appCtxStub)
+    player.action = actionOverload
+    player.move(eventRightStub, true)
+    player.update()
+
+    expect(player.position).toMatchObject({ x, y })
+  })
+
   test("Player position change on player movement right", () => {
     const x = 1
     const y = 2
@@ -70,7 +116,7 @@ describe("Test component Player", () => {
     player.move(eventRightStub, true)
     player.update()
 
-    expect(player.position).toMatchObject({ x: x + 5, y})
+    expect(player.position).toMatchObject({ x: x + 5, y })
     expect(player.direction).toBe("right")
   })
   test("Player position change on player movement up", () => {
@@ -88,7 +134,7 @@ describe("Test component Player", () => {
     player.move(eventUpStub, true)
     player.update()
 
-    expect(player.position).toMatchObject({x , y: y - 5 })
+    expect(player.position).toMatchObject({ x, y: y - 5 })
     expect(player.direction).toBe("up")
   })
 
@@ -108,7 +154,7 @@ describe("Test component Player", () => {
     }
 
     const player = new Player(img, x, y, w, h, appCtxStub)
-    player.moveJoystick(eventJoyStickStub)
+    player.joystickEvent(eventJoyStickStub)
     player.update()
 
     expect(player.position).toMatchObject({ x: x - 5, y: y })
@@ -126,18 +172,68 @@ describe("Test component Player", () => {
       map: { collision: () => false },
     }
     const movingOverload = {
-      left: true,
+      left: false,
       up: true,
-      right: true,
-      down: true,
+      right: false,
+      down: false,
     }
 
     const player = new Player(img, x, y, w, h, appCtxStub)
     player.moving = movingOverload
-    player.moveJoystick(eventJoyStickStub)
+    player.joystickEvent(eventJoyStickStub)
     player.update()
 
     expect(player.position).toMatchObject({ x: x, y: y })
+  })
+
+  test("Player detect joystick double click", () => {
+    const x = 1
+    const y = 2
+    const w = 4
+    const h = 8
+    const img = PlayerImg
+    const eventJoyStickStub = "start"
+    const actionSpy = jest.fn()
+    const appCtxStub = {
+      map: { 
+        collision: () => false,
+        interaction: () => { return {
+          action: actionSpy
+        }} 
+      },
+    }
+    const FirstDateMock = jest.fn(() => 0)
+    const SecondDateMock = jest.fn(() => 250)
+
+    const player = new Player(img, x, y, w, h, appCtxStub)
+    Date.now = FirstDateMock
+    player.joystickEvent(eventJoyStickStub)
+    Date.now = SecondDateMock
+    player.joystickEvent(eventJoyStickStub)
+
+    expect(actionSpy).toHaveBeenCalledTimes(1)
+  })
+
+  test("Player doens't detect joystick double click spaced over 300ms", () => {
+    const x = 1
+    const y = 2
+    const w = 4
+    const h = 8
+    const img = PlayerImg
+    const eventJoyStickStub = "start"
+    const appCtxStub = {
+      map: { collision: () => false },
+    }
+    const FirstDateMock = jest.fn(() => 0)
+    const SecondDateMock = jest.fn(() => 500)
+
+    const player = new Player(img, x, y, w, h, appCtxStub)
+    Date.now = FirstDateMock
+    player.joystickEvent(eventJoyStickStub)
+    Date.now = SecondDateMock
+    player.joystickEvent(eventJoyStickStub)
+
+    expect(player.action).toBeFalsy()
   })
 
   test("Player postion doesn't change on collision", () => {

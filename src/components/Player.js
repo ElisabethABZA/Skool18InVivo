@@ -6,16 +6,17 @@ const createImage = (src) => {
 
 class Player {
   constructor(src, x, y, w, h, appCtx) {
-    this.position = { x, y }
-    this.size = { w, h }
+    this.position = { x, y, w, h }
     this.moving = {
       left: false,
       up: false,
       right: false,
       down: false,
     }
+    this.action = false
+    this.lastClick = Date.now()
     this.frame = 0
-    this.direction = "up"
+    this.direction = "down"
     this.directionTile = {
       left: { x: 0, y: 32, w: 32, h: 32 },
       up: { x: 0, y: 32 * 3, w: 32, h: 32 },
@@ -26,7 +27,20 @@ class Player {
     this.map = appCtx.map
   }
 
-  moveJoystick(e) {
+  joystickEvent(e) {
+    if (e === "start") {
+      const now = Date.now()
+      const elapsed = now - this.lastClick
+      if (elapsed < 300 && elapsed > 0) {
+        const interaction = this.map.interaction(this)
+        if(interaction) {
+          this.action = interaction.action()
+        }
+      }
+      this.lastClick = Date.now()
+
+      return
+    }
     if (e === "stop") {
       this.moving.left = false
       this.moving.up = false
@@ -42,46 +56,57 @@ class Player {
 
   move(e, value) {
     if (e.keyCode === 37) {
-      this.moving.left = value // Left
+      // Left
+      this.moving.left = value
     } else if (e.keyCode === 38) {
-      this.moving.up = value // Up
+      // Up
+      this.moving.up = value
     } else if (e.keyCode === 39) {
-      this.moving.right = value // Right
+      // Right
+      this.moving.right = value
     } else if (e.keyCode === 40) {
-      this.moving.down = value // Down
+      // Down
+      this.moving.down = value
+    } else if (e.keyCode === 32 && value) {
+      // Space
+      const interaction = this.map.interaction(this)
+      if(interaction) {
+        this.action = interaction.action()
+      }
     }
   }
 
   update() {
-    const { x, y } = this.position
+    const { x, y, w, h } = this.position
+    if( this.action ) return // No move if in action
     if (
       this.moving.left &&
-      !this.map.collision({ ...this, position: { x: x - 5, y } })
+      !this.map.collision({ x: x - 5, y: y + 24, w, h })
     ) {
       this.position.x -= 5
-      this.direction = "left"
       this.frame = (this.frame + 1) % 15
+      this.direction = "left"
     } else if (
       this.moving.up &&
-      !this.map.collision({ ...this, position: { x, y: y - 5 } })
+      !this.map.collision({ x, y: y - 5 + 24, w, h })
     ) {
       this.position.y -= 5
-      this.direction = "up"
       this.frame = (this.frame + 1) % 15
+      this.direction = "up"
     } else if (
       this.moving.right &&
-      !this.map.collision({ ...this, position: { x: x + 5, y } })
+      !this.map.collision({ x: x + 5, y: y + 24, w, h })
     ) {
       this.position.x += 5
-      this.direction = "right"
       this.frame = (this.frame + 1) % 15
+      this.direction = "right"
     } else if (
       this.moving.down &&
-      !this.map.collision({ ...this, position: { x, y: y + 5 } })
+      !this.map.collision({ x, y: y + 5 + 24, w, h })
     ) {
       this.position.y += 5
-      this.direction = "down"
       this.frame = (this.frame + 1) % 15
+      this.direction = "down"
     } else {
       this.frame = 0
     }
@@ -102,9 +127,7 @@ class Player {
   }
 
   render(ctx, camera, appCtx) {
-    const { x, y } = this.position
-    const { w, h } = this.size
-
+    const { x, y, w, h } = this.position
     const { x: sX, y: sY, w: sW, h: sH } = this.choseDirectionTile()
 
     const frameOffset = (frame) => {

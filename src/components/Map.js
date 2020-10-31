@@ -1,4 +1,4 @@
-import CarteImg from "../assets/map.jpg"
+import CarteImg from "../assets/map.png"
 
 class Map {
   constructor() {
@@ -12,7 +12,8 @@ class Map {
     }
 
     this.solidEntities = []
-
+    this.interactibleEntities = []
+    /*
     const leftBorder = {
       position: { x: -100, y: 0 },
       size: { w: 100, h: this.worldSize.h },
@@ -29,7 +30,8 @@ class Map {
       position: { x: 0, y: this.worldSize.h },
       size: { w: this.worldSize.w, h: 100 },
     }
-    this.mapBorder = [leftBorder, topBorder, rightBorder, bottomBorder]
+    */
+    this.mapBorder = [/*leftBorder, topBorder, rightBorder, bottomBorder*/]
   }
 
   render(ctx, camera) {
@@ -45,6 +47,10 @@ class Map {
       camera.viewPort.w,
       camera.viewPort.h
     )
+
+    this.interactibleEntities.forEach( obj => {
+      obj.render(ctx, camera)
+    })
     ctx.restore()
   }
 
@@ -54,13 +60,13 @@ class Map {
     this.solidEntities.push(entity)
   }
 
-  collision(entity) {
-    const { x: eX, y: eY } = entity.position
-    const { w: eW, h: eH } = entity.size
+  registerInteractible(entity) {
+    this.interactibleEntities.push(entity)
+    this.solidEntities.push(entity.position)
+  }
 
-    const collisionDetection = (obj) => {
-      const { x: oX, y: oY } = obj.position
-      const { w: oW, h: oH } = obj.size
+  collision({x: eX, y: eY, w: eW, h: eH}) {
+    const collisionDetection = ({ x: oX, y: oY, w: oW, h: oH }) => {
       return eX < oX + oW && eX + eW > oX && eY < oY + oH && eY + eH > oY
     }
 
@@ -68,6 +74,38 @@ class Map {
       this.solidEntities.some(collisionDetection) ||
       this.mapBorder.some(collisionDetection)
     )
+  }
+
+  interaction(player) {
+    const {x: eX, y: eY, w: eW, h: eH} = player.position
+    const direction = player.direction
+    const collisionDetection = ({ position: { x: oX, y: oY, w: oW, h: oH }}) => {
+      switch(direction) {
+        case "left": {
+          const x = eX - eW * 0.5
+          const y = eY + eH * 0.5
+          return x < oX + oW && x + eW > oX && y < oY + oH && y + eH > oY
+        }
+        case "up": {
+          const x = eX + eW * 0.5
+          const y = eY - eH * 0.5
+          return x < oX + oW && x + eW > oX && y < oY + oH && y + eH > oY
+        }
+        case "right": {
+          const x = eX + eW * 1.5
+          const y = eY + eH * 0.5
+          return x < oX + oW && x + eW > oX && y < oY + oH && y + eH > oY
+        }
+        case "down": {
+          const x = eX + eW * 0.5
+          const y = eY + eH * 1.5
+          return x < oX + oW && x + eW > oX && y < oY + oH && y + eH > oY
+        }
+        default: return false;
+      }
+    }
+
+    return this.interactibleEntities.find(collisionDetection)
   }
 }
 

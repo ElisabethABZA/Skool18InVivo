@@ -2,12 +2,14 @@ import React, { useEffect, useRef, useCallback } from "react"
 import ReactNipple from "react-nipple"
 import "react-nipple/lib/styles.css"
 
+//import Collision from "./assets/collisions.json"
 import Map from "./components/Map"
 import Player from "./components/Player"
 import Camera from "./components/Camera"
 import Interactible from './components/Interactible'
 
 import PersoA from "./assets/player.png"
+import IAImg from "./assets/interactible.png"
 
 /**
  * TODO:
@@ -55,21 +57,22 @@ const App = () => {
     })
   }, [])
 
+  const registerInteractible = () => {
+    const iA = new Interactible(IAImg, 1107, 946, 48, 48)
+    AppCtx.map.registerInteractible(iA)
+  }
+
   const registerObjects = () => {
     AppCtx.map = new Map()
-    const solide = {
-      position: { x: 0, y: 0 },
-      size: { w: 150, h: 150 },
-    }
-    AppCtx.map.registerSolideEntity(solide)
+    //Collision.forEach( obj => {AppCtx.map.registerSolideEntity(obj)})
 
     // Register
     AppCtx.player = new Player(
       PersoA,
-      AppCtx.windowSize.w / 2,
-      AppCtx.windowSize.h / 2,
-      64,
-      64,
+      839,
+      1663,
+      48,
+      48,
       AppCtx
     )
     AppCtx.camera = new Camera(
@@ -84,10 +87,6 @@ const App = () => {
     AppCtx.toRender.push(AppCtx.camera)
     AppCtx.toRender.push(AppCtx.map)
     AppCtx.toRender.push(AppCtx.player)
-    AppCtx.toRender.push(new Interactible(
-      "https://via.placeholder.com/32x64",
-      200, 200, 32, 64
-    ))
   }
 
   const registerCallbacks = useCallback(() => {
@@ -107,9 +106,13 @@ const App = () => {
 
   useEffect(() => {
     const ctx = canvaRef.current.getContext("2d")
+    ctx.webkitImageSmoothingEnabled = false;
+    ctx.mozImageSmoothingEnabled = false;
+    ctx.imageSmoothingEnabled = false;
     AppCtx.windowSize = { w: window.innerWidth, h: window.innerHeight }
 
     registerObjects()
+    registerInteractible()
     registerCallbacks()
     requestAnimationFrame(() => {
       gameLoop(ctx)
@@ -119,8 +122,9 @@ const App = () => {
   return (
     <>
       <ReactNipple
-        onDir={(_, value) => AppCtx.player.moveJoystick(value)}
-        onEnd={(_, __) => AppCtx.player.moveJoystick("stop")}
+        onStart={(_, value) => AppCtx.player.joystickEvent("start")}
+        onDir={(_, value) => AppCtx.player.joystickEvent(value)}
+        onEnd={(_, __) => AppCtx.player.joystickEvent("stop")}
         options={{
           zone: document.getElementById("root"),
           mode: "dynamic",
