@@ -12,30 +12,32 @@ describe("Test component Map", () => {
       drawImage: jest.fn(),
       restore: jest.fn(),
     }
-    const cameraStub = {
-      viewPort: {
-        x: 0,
-        y: 0,
-        w: 0,
-        h: 0,
+    const appCtxStub = {
+      camera: {
+        viewPort: {
+          x: 0,
+          y: 0,
+          w: 0,
+          h: 0,
+        },
       },
     }
 
     const map = new Map()
-    map.render(ctxSpy, cameraStub)
+    map.render(ctxSpy, appCtxStub)
 
     expect(ctxSpy.save).toHaveBeenCalledTimes(1)
     expect(ctxSpy.drawImage).toHaveBeenCalledTimes(1)
     expect(ctxSpy.drawImage).toHaveBeenCalledWith(
       map.img,
-      -cameraStub.viewPort.x,
-      -cameraStub.viewPort.y,
-      cameraStub.viewPort.w,
-      cameraStub.viewPort.h,
+      -appCtxStub.camera.viewPort.x,
+      -appCtxStub.camera.viewPort.y,
+      appCtxStub.camera.viewPort.w,
+      appCtxStub.camera.viewPort.h,
       0,
       0,
-      cameraStub.viewPort.w,
-      cameraStub.viewPort.h
+      appCtxStub.camera.viewPort.w,
+      appCtxStub.camera.viewPort.h
     )
     expect(ctxSpy.restore).toHaveBeenCalledTimes(1)
   })

@@ -34,7 +34,8 @@ class Map {
     this.mapBorder = [/*leftBorder, topBorder, rightBorder, bottomBorder*/]
   }
 
-  render(ctx, camera) {
+  render(ctx, AppCtx) {
+    const camera = AppCtx.camera
     ctx.save()
     ctx.drawImage(
       this.img,
@@ -47,10 +48,6 @@ class Map {
       camera.viewPort.w,
       camera.viewPort.h
     )
-
-    this.interactibleEntities.forEach( obj => {
-      obj.render(ctx, camera)
-    })
     ctx.restore()
   }
 

@@ -39,18 +39,20 @@ describe("Test component Player", () => {
       drawImage: jest.fn(),
       restore: jest.fn(),
     }
-    const appCtxStub = { map: {} }
-    const cameraStub = {
-      viewPort: {
-        x: 16,
-        y: 32,
-        w: 64,
-        h: 128,
+    const appCtxStub = {
+      camera: {
+        viewPort: {
+          x: 16,
+          y: 32,
+          w: 64,
+          h: 128,
+        },
       },
+      map: {},
     }
 
     const player = new Player(img, x, y, w, h, appCtxStub)
-    player.render(ctxSpy, cameraStub)
+    player.render(ctxSpy, appCtxStub)
 
     expect(ctxSpy.save).toHaveBeenCalledTimes(1)
     expect(ctxSpy.drawImage).toHaveBeenCalledTimes(1)
@@ -195,11 +197,13 @@ describe("Test component Player", () => {
     const eventJoyStickStub = "start"
     const actionSpy = jest.fn()
     const appCtxStub = {
-      map: { 
+      map: {
         collision: () => false,
-        interaction: () => { return {
-          action: actionSpy
-        }} 
+        interaction: () => {
+          return {
+            action: actionSpy,
+          }
+        },
       },
     }
     const FirstDateMock = jest.fn(() => 0)

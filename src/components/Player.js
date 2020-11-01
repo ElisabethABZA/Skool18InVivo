@@ -126,7 +126,8 @@ class Player {
     }
   }
 
-  render(ctx, camera, appCtx) {
+  render(ctx, appCtx) {
+    const camera = appCtx.camera
     const { x, y, w, h } = this.position
     const { x: sX, y: sY, w: sW, h: sH } = this.choseDirectionTile()
 

@@ -7,6 +7,7 @@ import Map from "./components/Map"
 import Player from "./components/Player"
 import Camera from "./components/Camera"
 import Interactible from './components/Interactible'
+import { Skoolers } from './components/Assets'
 
 import PersoA from "./assets/player.png"
 import IAImg from "./assets/interactible.png"
@@ -22,6 +23,7 @@ const AppCtx = {
     h: 0,
   },
   toRender: [],
+  entities: [],
   player: null,
   map: null,
   camera: null,
@@ -34,16 +36,19 @@ const App = () => {
   const canvaRef = useRef(null)
 
   const update = () => {
+    AppCtx.entities.forEach( e => { e.update(AppCtx) })
+    /*
     AppCtx.camera.update()
     AppCtx.player.update()
     AppCtx.map.update()
+    */
   }
 
   const render = (ctx) => {
     ctx.clearRect(0, 0, AppCtx.windowSize.w, AppCtx.windowSize.h)
     ctx.save()
-    AppCtx.toRender.forEach((o) => {
-      o.render(ctx, AppCtx.camera, AppCtx)
+    AppCtx.entities.forEach(e => {
+      e.render(ctx, AppCtx)
     })
     ctx.restore()
   }
@@ -57,11 +62,6 @@ const App = () => {
     })
   }, [])
 
-  const registerInteractible = () => {
-    const iA = new Interactible(IAImg, 1107, 946, 48, 48)
-    AppCtx.map.registerInteractible(iA)
-  }
-
   const registerObjects = () => {
     AppCtx.map = new Map()
     //Collision.forEach( obj => {AppCtx.map.registerSolideEntity(obj)})
@@ -69,12 +69,14 @@ const App = () => {
     // Register
     AppCtx.player = new Player(
       PersoA,
-      839,
-      1663,
+      1107,
+      986,
       48,
       48,
       AppCtx
     )
+    
+
     AppCtx.camera = new Camera(
       0,
       0,
@@ -84,9 +86,14 @@ const App = () => {
       AppCtx.map
     )
 
-    AppCtx.toRender.push(AppCtx.camera)
-    AppCtx.toRender.push(AppCtx.map)
-    AppCtx.toRender.push(AppCtx.player)
+    AppCtx.entities.push(AppCtx.camera)
+    AppCtx.entities.push(AppCtx.map)
+    Skoolers.forEach((sk, i) => {
+      const iA = new Interactible(IAImg, 1107 + (i * 50), 946, 48, 48, AppCtx, sk)
+      AppCtx.map.registerInteractible(iA)
+      AppCtx.entities.push(iA)
+    })
+    AppCtx.entities.push(AppCtx.player)
   }
 
   const registerCallbacks = useCallback(() => {
@@ -112,7 +119,6 @@ const App = () => {
     AppCtx.windowSize = { w: window.innerWidth, h: window.innerHeight }
 
     registerObjects()
-    registerInteractible()
     registerCallbacks()
     requestAnimationFrame(() => {
       gameLoop(ctx)
