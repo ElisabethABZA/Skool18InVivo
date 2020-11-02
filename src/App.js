@@ -161,7 +161,7 @@ const App = () => {
     })
   }, [forceUpdate])
 
-  useEffect(async () => {
+  useEffect(() => {
     const ctx = canvaRef.current.getContext("2d")
     ctx.webkitImageSmoothingEnabled = false
     ctx.mozImageSmoothingEnabled = false
@@ -175,14 +175,11 @@ const App = () => {
       gameLoop(ctx)
     })
 
-    async function createDoc() {
-      const data = {
-        name: "RAndome name",
-      }
-      AppCtx.id = "id" + Math.floor(Math.random() * 10000)
-      db.ref("/visitors/" + AppCtx.id).set(data)
+    const data = {
+      name: "RAndome name",
     }
-    createDoc()
+    AppCtx.id = "id" + Math.floor(Math.random() * 10000)
+    db.ref("/visitors/" + AppCtx.id).set(data)
   }, [gameLoop, registerCallbacks])
 
   return (
