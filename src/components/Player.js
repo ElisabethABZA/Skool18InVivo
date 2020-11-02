@@ -1,3 +1,4 @@
+import { db } from "../services/firebase"
 const createImage = (src) => {
   var img = new Image()
   img.src = src
@@ -33,7 +34,7 @@ class Player {
       const elapsed = now - this.lastClick
       if (elapsed < 300 && elapsed > 0) {
         const interaction = this.map.interaction(this)
-        if(interaction) {
+        if (interaction) {
           this.action = interaction.action()
         }
       }
@@ -70,15 +71,15 @@ class Player {
     } else if (e.keyCode === 32 && value) {
       // Space
       const interaction = this.map.interaction(this)
-      if(interaction) {
+      if (interaction) {
         this.action = interaction.action()
       }
     }
   }
 
-  update() {
+  update(AppCtx) {
     const { x, y, w, h } = this.position
-    if( this.action ) return // No move if in action
+    if (this.action) return // No move if in action
     if (
       this.moving.left &&
       !this.map.collision({ x: x - 5, y: y + 24, w, h })
@@ -110,6 +111,11 @@ class Player {
     } else {
       this.frame = 0
     }
+    db.ref("/visitors/" + AppCtx.id).update({
+      x,
+      y,
+      direction: this.direction,
+    })
   }
 
   choseDirectionTile() {

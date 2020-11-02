@@ -1,6 +1,6 @@
 import CarteImg from "../assets/map.png"
 
-class Map {
+class World {
   constructor() {
     var img = new Image()
     img.src = CarteImg
@@ -13,6 +13,7 @@ class Map {
 
     this.solidEntities = []
     this.interactibleEntities = []
+    this.visitors = new Map()
     /*
     const leftBorder = {
       position: { x: -100, y: 0 },
@@ -36,6 +37,8 @@ class Map {
 
   render(ctx, AppCtx) {
     const camera = AppCtx.camera
+
+
     ctx.save()
     ctx.drawImage(
       this.img,
@@ -48,6 +51,7 @@ class Map {
       camera.viewPort.w,
       camera.viewPort.h
     )
+    this.visitors.forEach(v => v.render(ctx, AppCtx))
     ctx.restore()
   }
 
@@ -106,4 +110,4 @@ class Map {
   }
 }
 
-export default Map
+export default World
