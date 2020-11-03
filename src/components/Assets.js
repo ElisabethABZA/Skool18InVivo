@@ -77,7 +77,7 @@ export const Skoolers = [
   },
   {
     name: "Elisabeth ( ABZA )",
-    position: { x: 1380, y: 823, w: 64, h: 39 },
+    position: { x: 1091, y: 684, w: 71, h: 33 },
     text: "J'ai tres souvent la tete dans les nuages.",
     skill: [JavaImgSrc, ReactImgSrc, TsImgSrc, FirebaseImgSrc, AzureImgSrc],
     img: ABZA,
@@ -125,7 +125,7 @@ export const Skoolers = [
   },
   {
     name: "Ziyu ( ZIYU )",
-    position: { x: 1091, y: 684, w: 71, h: 33 },
+    position: { x: 1380, y: 823, w: 64, h: 39 },
     text: "Un p'tit peu de covid ?",
     skill: [KotlinImgSrc, SwiftImgSrc, JavaImgSrc, FlutterImgSrc],
     img: ZIYU,
