@@ -1,37 +1,16 @@
-import CarteImg from "../assets/map.png"
-
+import { CarteImg } from "./Assets"
 class World {
   constructor() {
-    var img = new Image()
-    img.src = CarteImg
-    this.img = img
+    this.img = CarteImg
 
     this.worldSize = {
-      w: img.width,
-      h: img.height,
+      w: this.img.width,
+      h: this.img.height,
     }
 
     this.solidEntities = []
     this.interactibleEntities = []
     this.visitors = new Map()
-    /*
-    const leftBorder = {
-      position: { x: -100, y: 0 },
-      size: { w: 100, h: this.worldSize.h },
-    }
-    const topBorder = {
-      position: { x: 0, y: -100 },
-      size: { w: this.worldSize.w, h: 100 },
-    }
-    const rightBorder = {
-      position: { x: this.worldSize.w, y: 0 },
-      size: { w: 100, h: this.worldSize.h },
-    }
-    const bottomBorder = {
-      position: { x: 0, y: this.worldSize.h },
-      size: { w: this.worldSize.w, h: 100 },
-    }
-    */
     this.mapBorder = [/*leftBorder, topBorder, rightBorder, bottomBorder*/]
   }
 

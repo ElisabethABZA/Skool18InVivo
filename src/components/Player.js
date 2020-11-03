@@ -1,10 +1,3 @@
-import { db } from "../services/firebase"
-const createImage = (src) => {
-  var img = new Image()
-  img.src = src
-  return img
-}
-
 class Player {
   constructor(src, x, y, w, h, appCtx) {
     this.position = { x, y, w, h }
@@ -24,7 +17,7 @@ class Player {
       right: { x: 0, y: 32 * 2, w: 32, h: 32 },
       down: { x: 0, y: 0, w: 32, h: 32 },
     }
-    this.img = createImage(src)
+    this.img = src
     this.map = appCtx.map
   }
 
@@ -82,28 +75,28 @@ class Player {
     if (this.action) return // No move if in action
     if (
       this.moving.left &&
-      !this.map.collision({ x: x - 5, y: y + 24, w, h })
+      !this.map.collision({ x: x - 5, y: y + 32, w, h: h - 32 })
     ) {
       this.position.x -= 5
       this.frame = (this.frame + 1) % 15
       this.direction = "left"
     } else if (
       this.moving.up &&
-      !this.map.collision({ x, y: y - 5 + 24, w, h })
+      !this.map.collision({ x, y: y - 5 + 32, w, h: h- 32 })
     ) {
       this.position.y -= 5
       this.frame = (this.frame + 1) % 15
       this.direction = "up"
     } else if (
       this.moving.right &&
-      !this.map.collision({ x: x + 5, y: y + 24, w, h })
+      !this.map.collision({ x: x + 5, y: y + 32, w, h: h-32 })
     ) {
       this.position.x += 5
       this.frame = (this.frame + 1) % 15
       this.direction = "right"
     } else if (
       this.moving.down &&
-      !this.map.collision({ x, y: y + 5 + 24, w, h })
+      !this.map.collision({ x, y: y + 5 + 32, w, h: h - 32 })
     ) {
       this.position.y += 5
       this.frame = (this.frame + 1) % 15
@@ -111,11 +104,13 @@ class Player {
     } else {
       this.frame = 0
     }
+    /*
     db.ref("/visitors/" + AppCtx.id).update({
       x,
       y,
       direction: this.direction,
     })
+    */
   }
 
   choseDirectionTile() {

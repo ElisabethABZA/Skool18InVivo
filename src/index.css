@@ -1,10 +1,9 @@
-body {
+html, body {
   margin: 0 !important;
   padding: 0 !important;
   overflow: hidden;
   background-color: #232432;
 }
-
 @font-face {
   font-family: dialog;
   src: url('font.ttf');
