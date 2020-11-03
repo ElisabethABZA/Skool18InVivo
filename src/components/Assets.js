@@ -65,7 +65,7 @@ export const Skoolers = [
     name: "Clarisse ( DAMO )",
     position: { x: 1050, y: 1017, w: 65, h: 37 },
     text: "You're talking to me ?",
-    skill: [ReactImgSrc, TsImgSrc, JavaImgSrc, JavaImgSrc],
+    skill: [ReactImgSrc, TsImgSrc, JsImgSrc, JavaImgSrc],
     img: DAMO,
   },
   {
