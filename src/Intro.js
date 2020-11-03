@@ -32,7 +32,7 @@ const Intro = ({setPlay}) => {
   const dialogue = [
     "HEY !!! De nouveaux skoolers sont la !!!!",
     "Va leur parler !!",
-    "Pour te deplacer utilise les [ fleches ] de ton clavier et pour interagir avec eux la bare [ espace ].",
+    "Pour te deplacer utilise les [ fleches ] de ton clavier et pour interagir avec eux la barre [ espace ].",
     "Tu utilises un telephone ? Rien de plus simple, fait [ glisser ton doigt ] et [ double tape ] pour interagir."
   ]
 
