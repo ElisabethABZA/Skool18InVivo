@@ -148,7 +148,7 @@ export const Skoolers = [
 export const EasterEgg = [
   {
     position: { x: 1301, y: 1606, w: 42, h: 42 },
-    text: "Culture Code by Octo Technologie",
+    text: "Culture Code by Octo Technology",
   },
   {
     position: { x: 1617, y: 1035, w: 81, h: 41 },
@@ -168,7 +168,7 @@ export const EasterEgg = [
   },
   {
     position: { x: 1207, y: 647, w: 61, h: 72 },
-    text: "Clean Archi by Octo Technologie",
+    text: "Culture DevOps I by Octo Technology",
   },
   {
     position: { x: 1521, y: 719, w: 84, h: 73 },
